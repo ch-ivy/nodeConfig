@@ -1,0 +1,482 @@
+<main class="container pb-4">
+  <header class="py-3">
+    <nav class="navbar navbar-expand navbar-light bg-faded">
+      <a class="navbar-brand" href="/">
+        <img src="/assets/logo.png" alt="Logo" class="img-fluid" />
+      </a>
+    </nav>
+  </header>
+
+  <section class="heading">
+    <div class="title text-center mt-3 mb-5">
+      <h2>welcome to solar node configuration Page.</h2>
+      <p>This page will guide you to set up your Solar node.</p>
+      <small>
+        For more information visit
+        <a href="https://solarbankers.com/solar_node.html" target="_blank"
+          >https://solarbankers.com/solar_node.html</a
+        >
+      </small>
+    </div>
+
+    <div class="container service">
+      <div class="list-group mt-4">
+        <div
+          class="my-3 mx-auto item col-md-8"
+          (click)="networkStatus(); open(wifi)"
+        >
+          <div
+            class="list-group-item list-group-item-action"
+            matRipple
+            [matRippleCentered]="true"
+          >
+            <div
+              class="status"
+              [class.not-configured]="wifiSubscribe?.Status !== 'Connected'"
+            ></div>
+            <div>
+              <h2>Wifi Configuration</h2>
+              <small>
+                Solar node must be Connectd to an Internet. You can set up your
+                wifi connection or just use the ethernet cable
+              </small>
+            </div>
+            <div class="detail">
+              <h3>
+                <span
+                  class="badge badge-pill"
+                  [class.badge-success]="wifiSubscribe?.Status === 'Connected'"
+                  [class.badge-danger]="wifiSubscribe?.Status !== 'Connected'"
+                  >{{ wifiSubscribe?.Status || "Not Connected" }}</span
+                >
+              </h3>
+
+              <p>
+                SSID : <span>{{ wifiSubscribe?.SSID || "No connection" }}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="my-3 mx-auto item col-md-8" (click)="open(account)">
+          <div
+            class="list-group-item list-group-item-action"
+            matRipple
+            [matRippleCentered]="true"
+          >
+            <div
+              class="status"
+              [class.not-configured]="accountStat?.status !== 'Configured'"
+            ></div>
+            <div>
+              <h2>Solar Bankers Account</h2>
+              <small>
+                Enter your Solar Bankers credentials to be able to access your
+                solar bankers account.
+              </small>
+            </div>
+            <div class="detail">
+              <h3>
+                <span
+                  class="badge badge-pill"
+                  [class.badge-success]="accountStat?.status === 'Configured'"
+                  [class.badge-danger]="accountStat?.status !== 'Configured'"
+                >
+                  {{ accountStat?.status || "Not Configured" }}
+                </span>
+              </h3>
+              <p>
+                ID : <span>{{ accountStat?.username || "No user" }} </span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="my-3 mx-auto item col-md-8" (click)="open(notify)">
+          <div
+            class="list-group-item list-group-item-action"
+            matRipple
+            [matRippleCentered]="true"
+          >
+            <div
+              class="status"
+              [class.not-configured]="!accountStat?.notification"
+            ></div>
+            <div>
+              <h2>Notifications</h2>
+              <small>
+                We want to Keep you updated about Solar Node status. Please
+                Enter your email address.
+              </small>
+            </div>
+            <div class="detail">
+              <h3>
+                <span
+                  class="badge badge-pill badge-success"
+                  *ngIf="accountStat?.notification"
+                  >Subscribed</span
+                >
+                <span
+                  class="badge badge-pill badge-danger"
+                  *ngIf="!accountStat?.notification"
+                  >Not Subscribed</span
+                >
+              </h3>
+              <p>
+                Email : <span> {{ accountStat?.email || "No email" }}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mx-auto text-center my-3">
+      <button
+        mat-raised-button
+        color="primary"
+        class="btn px-5"
+        (click)="open(alert)"
+      >
+        Submit
+      </button>
+    </div>
+
+    <!-- <div class="popup" *ngIf="alertErr" (click)="alertErr = ''">
+      <ngb-alert
+        [type]="'danger'"
+        innerHTML="{{ alertErr }}"
+        (close)="alertErr = ''"
+        [dismissible]="true"
+      >
+      </ngb-alert>
+    </div> -->
+  </section>
+</main>
+
+<ng-template #wifi let-modal>
+  <div class="modal-header border-0">
+    <h4 class="modal-title" id="modal-basic-title">Network Configuration</h4>
+  </div>
+  <div class="modal-body my-2">
+    <!-- Wifi List  -->
+    <div class="wifi-list col-md-9" *ngIf="!addWifi">
+      <!-- Wifi Connection -->
+      <div class="wifi_con">
+        <h2>Wifi Available Networks</h2>
+        <div
+          class="my-2"
+          *ngIf="
+            wifiSubscribe?.AvailableNetworks &&
+            wifiSubscribe?.AvailableNetworks.length > 0
+          "
+        >
+          <div
+            class="list-group-item my-1 justify-content-between align-items-center active"
+            *ngIf="wifiSubscribe?.Status === 'Connected'"
+            (click)="connect(wifiSubscribe?.SSID)"
+          >
+            {{ wifiSubscribe?.SSID }}
+            <span class="badge badge-pill badge-success">connected</span>
+          </div>
+          <div
+            class="list-group"
+            *ngFor="let item of wifiSubscribe?.AvailableNetworks"
+          >
+            <div
+              class="list-group-item d-flex my-1 justify-content-between align-items-center"
+              *ngIf="item !== wifiSubscribe?.SSID"
+              (click)="connect(item)"
+            >
+              {{ item }}
+              <span
+                *ngIf="checkSaved(item)"
+                class="badge badge-pill badge-warning text-white"
+              >
+                saved
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          *ngIf="
+            (wifiSubscribe?.AvailableNetworks &&
+              wifiSubscribe?.AvailableNetworks.length <= 0) ||
+            !wifiSubscribe?.AvailableNetworks
+          "
+        >
+          <ngb-alert type="warning" [dismissible]="false">
+            There are No available Networks
+          </ngb-alert>
+        </div>
+      </div>
+
+      <!-- Saved Network  -->
+      <div class="ethernet_con">
+        <h2>Saved Networks</h2>
+
+        <div class="my-2" *ngIf="wifiSubscribe?.SavedNetworks">
+          <div class="list-group">
+            <div
+              class="list-group-item my-1 d-flex justify-content-between align-items-center"
+              [class.active]="item.ssid === wifiSubscribe?.SSID"
+              *ngFor="let item of wifiSubscribe?.SavedNetworks"
+              (click)="connect(item.ssid)"
+            >
+              {{ item.ssid }}
+              <span
+                class="badge badge-pill badge-success"
+                *ngIf="item.ssid === wifiSubscribe?.SSID"
+                >connected</span
+              ><span
+                class="badge badge-pill badge-info"
+                *ngIf="
+                  checkAvailable(item.ssid) && item.ssid !== wifiSubscribe?.SSID
+                "
+                >available</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!wifiSubscribe?.SavedNetworks">
+          <ngb-alert type="warning" [dismissible]="false">
+            You don't have any saved Network
+          </ngb-alert>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Connection -->
+    <div class="d-block w-100" *ngIf="addWifi">
+      <form [formGroup]="wifiForm" class="example-form">
+        <div class="form-group w-75 mx-auto">
+          <label for="wifi">Wifi Name</label>
+          <div class="input-group mb-3">
+            <input
+              formControlName="wifi_name"
+              type="text"
+              class="form-control"
+              aria-describedby="helpId"
+              [class.is-invalid]="wi.invalid && wifiError"
+            />
+            <div class="input-group-append">
+              <span class="input-group-text" id="basic-addon2">
+                <i class="icon-feed"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group w-75 mx-auto">
+          <label for="password">Password</label>
+          <div class="input-group mb-3">
+            <input
+              type="password"
+              formControlName="password"
+              class="form-control"
+              id="wifi_ps"
+              aria-describedby="helpId"
+              [class.is-invalid]="ps.invalid && wifiError"
+            />
+            <div class="input-group-append" (click)="togglePassword('wifi_ps')">
+              <span
+                [class]="psClass + ' input-group-text ps'"
+                id="basic-addon2"
+              >
+                <i class="icon-eye"></i
+              ></span>
+            </div>
+          </div>
+
+          <small class="text-danger" *ngIf="wifiError">{{ wifiError }}</small>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-footer border-0">
+    <button
+      mat-stroked-button
+      *ngIf="!addWifi"
+      type="button"
+      class="btn submit"
+      (click)="addWifi = true; newConnection = true"
+    >
+      Add a connection
+    </button>
+    <button
+      mat-stroked-button
+      type="button"
+      class="btn submit mr-auto"
+      *ngIf="forgetPass"
+      (click)="forgetWifi()"
+    >
+      Forget Wifi
+    </button>
+    <button
+      mat-stroked-button
+      *ngIf="addWifi"
+      color="warn"
+      type="button"
+      class="btn mr-2"
+      (click)="clearWifi()"
+    >
+      Cancel
+    </button>
+    <button
+      mat-raised-button
+      type="button"
+      color="primary"
+      class="btn btn-success"
+      *ngIf="addWifi"
+      (click)="saveWifi()"
+    >
+      Save
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #account let-modal>
+  <div class="modal-header border-0">
+    <h4 class="modal-title" id="modal-basic-title">Solar Bankers Account</h4>
+  </div>
+  <div class="modal-body my-2">
+    <div class="d-block w-100">
+      <form class="example-form" [formGroup]="accountForm">
+        <div class="form-group w-75 mx-auto">
+          <label for="username">Username</label>
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              formControlName="username"
+              class="form-control"
+              aria-describedby="helpId"
+              [class.is-invalid]="us.invalid && us.touched"
+            />
+            <div class="input-group-append">
+              <span class="input-group-text" id="basic-addon2">
+                <i class="icon-user"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group w-75 mx-auto">
+          <label for="password">Password</label>
+          <div class="input-group mb-3">
+            <input
+              type="password"
+              [class.is-invalid]="acc_ps.invalid && acc_ps.touched"
+              formControlName="password"
+              class="form-control"
+              id="acc_pss"
+              aria-describedby="helpId"
+            />
+            <div class="input-group-append" (click)="togglePassword('acc_pss')">
+              <span
+                [class]="psClass + ' input-group-text ps'"
+                id="basic-addon2"
+              >
+                <i class="icon-eye"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer border-0">
+    <button
+      [disabled]="accountForm.invalid"
+      mat-stroked-button
+      type="button"
+      class="btn submit"
+      (click)="addAccount(); modal.close()"
+    >
+      Save
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #notify let-modal>
+  <div class="modal-header border-0">
+    <h4 class="modal-title" id="modal-basic-title">Notification</h4>
+  </div>
+  <div class="modal-body my-4">
+    <div class="d-block w-100">
+      <p class="mx-auto text-center">Enable weekly notifications</p>
+      <form [formGroup]="notif" class="example-form">
+        <div class="form-group w-75 mx-auto">
+          <label for="wifi">Email Address</label>
+          <div class="input-group mb-3">
+            <input
+              formControlName="email"
+              type="text"
+              class="form-control"
+              aria-describedby="helpId"
+              [class.is-invalid]="em.invalid && em.touched"
+            />
+            <div class="input-group-append">
+              <span class="input-group-text" id="basic-addon2">
+                <i class="icon-bell"></i
+              ></span>
+            </div>
+          </div>
+          <div class="custom-control custom-checkbox">
+            <input
+              type="checkbox"
+              class="custom-control-input"
+              id="customCheck1"
+              formControlName="subscribe"
+            />
+            <label class="custom-control-label" for="customCheck1"
+              >Recieve email about your SLB earn and statistics every
+              monday</label
+            >
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer border-0">
+    <button
+      mat-stroked-button
+      type="button"
+      [disabled]="notif.invalid"
+      class="btn submit"
+      (click)="addAccount(); modal.close()"
+    >
+      Save
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #alert let-modal>
+  <div class="modal-body text-center">
+    <p>
+      Solar Node is going to reboot itself to make changes. Do you want to
+      submit the changes and reboot?
+    </p>
+
+    <div class="mt-4 d-flex justify-content-end">
+      <button
+        class="mr-2"
+        mat-raised-button
+        color="warn"
+        (click)="modal.close()"
+      >
+        No
+      </button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="submit(); modal.close()"
+      >
+        Yes
+      </button>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <small class="font-weight-bold text-capitalize">
+      Please login again after reboot to be sure your configurations are
+      correct.
+    </small>
+  </div>
+</ng-template>

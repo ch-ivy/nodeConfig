@@ -1,0 +1,178 @@
+/* You can add global styles to this file, and also import other style files */
+/**
+* Generated theme by Material Theme Generator
+* https://materialtheme.arcsine.dev
+*/
+
+$simple-line-font-path: "../node_modules/simple-line-icons/fonts/";
+
+@import "~@angular/material/theming";
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+
+// Compute font config
+@include mat-core();
+
+// Theme Config
+
+body {
+  --primary-color: #28a745;
+  --primary-lighter-color: #bfe5c7;
+  --primary-darker-color: #188c2e;
+  --text-primary-color: #{$light-primary-text};
+  --text-primary-lighter-color: #{$dark-primary-text};
+  --text-primary-darker-color: #{$light-primary-text};
+}
+
+$mat-primary: (
+  main: #28a745,
+  lighter: #bfe5c7,
+  darker: #188c2e,
+  200: #28a745,
+  // For slide toggle,
+    contrast:
+    (
+      main: $light-primary-text,
+      lighter: $dark-primary-text,
+      darker: $light-primary-text,
+    ),
+);
+$theme-primary: mat-palette($mat-primary, main, lighter, darker);
+
+body {
+  --accent-color: #fbe93c;
+  --accent-lighter-color: #fef8c5;
+  --accent-darker-color: #f9df27;
+  --text-accent-color: #{$dark-primary-text};
+  --text-accent-lighter-color: #{$dark-primary-text};
+  --text-accent-darker-color: #{$dark-primary-text};
+}
+
+$mat-accent: (
+  main: #fbe93c,
+  lighter: #fef8c5,
+  darker: #f9df27,
+  200: #fbe93c,
+  // For slide toggle,
+    contrast:
+    (
+      main: $dark-primary-text,
+      lighter: $dark-primary-text,
+      darker: $dark-primary-text,
+    ),
+);
+$theme-accent: mat-palette($mat-accent, main, lighter, darker);
+
+body {
+  --warn-color: #dc3545;
+  --warn-lighter-color: #f5c2c7;
+  --warn-darker-color: #ce222e;
+  --text-warn-color: #{$light-primary-text};
+  --text-warn-lighter-color: #{$dark-primary-text};
+  --text-warn-darker-color: #{$light-primary-text};
+}
+
+$mat-warn: (
+  main: #dc3545,
+  lighter: #f5c2c7,
+  darker: #ce222e,
+  200: #dc3545,
+  // For slide toggle,
+    contrast:
+    (
+      main: $light-primary-text,
+      lighter: $dark-primary-text,
+      darker: $light-primary-text,
+    ),
+);
+$theme-warn: mat-palette($mat-warn, main, lighter, darker);
+
+$theme: mat-light-theme($theme-primary, $theme-accent, $theme-warn);
+$altTheme: mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
+
+// Theme Init
+@include angular-material-theme($theme);
+
+.theme-alternate {
+  @include angular-material-theme($altTheme);
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: "Raleway", sans-serif !important;
+  background-color: #f9f9f9;
+}
+*,
+*:hover,
+*:focus {
+  outline: none !important;
+}
+
+.btn:focus {
+  box-shadow: none !important;
+}
+
+.modal-content {
+  background: #fbcf3c;
+  background: linear-gradient(#fff, #fff),
+    linear-gradient(
+      180deg,
+      rgba(148, 247, 85, 1) 12%,
+      rgba(251, 233, 60, 1) 84%
+    );
+  border: double 2px transparent;
+  border-width: 1px 1px 1px 1px;
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+}
+
+form {
+  label {
+    font-size: 0.8em;
+    color: #777;
+    font-weight: 600;
+    margin-bottom: -15px;
+  }
+  .form-control {
+    border-width: 0 0 1.5px 0;
+    border-color: #999;
+    border-radius: 0;
+    &:focus {
+      box-shadow: none;
+      border-color: rgba(148, 247, 85, 1);
+    }
+  }
+
+  .input-group-text {
+    background-color: transparent;
+    border-width: 0 0 1.5px 0;
+    border-color: #999;
+    border-radius: 0;
+  }
+  .ps {
+    cursor: pointer;
+    &:hover {
+      color: rgba(148, 247, 85, 1);
+      border-color: rgba(148, 247, 85, 1);
+    }
+  }
+  .active {
+    color: rgba(148, 247, 85, 1);
+    border-color: rgba(148, 247, 85, 1);
+  }
+}
+.form-control:focus label {
+  color: rgba(148, 247, 85, 1) !important;
+}
+.custom-control-label {
+  line-height: 2;
+}
+.custom-control-input:checked ~ .custom-control-label::before {
+  color: #fff;
+  border-color: #28a745;
+  background-color: #28a745;
+}
